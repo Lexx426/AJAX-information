@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax 2 - Local JSON</title>
+</head>
+<body>
+    Ajax2 - fetching local JSon info!
+
+    <button id="button1">Get User</button>
+    <button id="button2">Get Users</button>
+    <br><br>
+    <h1>User</h1>
+    <div id="user"></div>
+    <h1>Users</h1>
+    <div id="users"></div>
+    <script>
+        document.getElementById("button1").addEventListener("click", loadUser);
+        function loadUser(){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'user.json' , true);
+            xhr.onload = function(){
+                if (this.status == 200) {
+                    console.log(this.responseText); // not actually needed
+                    var user = this.responseText;  // not actually needed
+                    console.log(user.name); // not actually needed
+                    // when you do this ^ line 27-28, when you console on web, it will come out as "undefined" so you need to do it as below
+                    var user = JSON.parse(this.responseText); // this lets you actually acess the information 
+                    console.log(user.name); // now you will actually see it !
+                    // what line 33 -39 does is output the "rick" user inside the div #user in line 16
+                    var output = ' '; // initiliaze with an empty value, then append on to it with line 34 - 38
+                    output += '<ul>' + 
+                        '<li>ID: ' + user.id + '</li>' +
+                        '<li>Name: ' + user.name + '</li>' +
+                        '<li>Email: ' + user.email + '</li>' +
+                        '</ul';
+                        // the above lines of 33-38  are concatinating in ES5 Javascript --- html string / output string
+                    document.getElementById('user').innerHTML = output;
+                    // this is what puts it in the #user 
+                }
+            }
+            xhr.send();
+        }
+        // with this we have fetched data from the JSON file asynch and built a template string/output string and we have output it inside the browser all without having to reload.
+
+
+        //  Now to get from USERS.json
+        document.getElementById("button2").addEventListener("click", loadUsers);
+        function loadUsers(){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'users.json' , true);
+            xhr.onload = function(){
+                if (this.status == 200) {
+                    var users = JSON.parse(this.responseText); // this lets you actually acess the information 
+                    var output = ' '; // initiliaze with an empty value, then append on to it with line 34 - 38
+                    // since you have an array of users, you need to loop thro for each one!
+                    for (var i in users){
+                        output += '<ul>' + 
+                            '<li>ID: ' + users[i].id + '</li>' + 
+                            '<li>Name: ' + users[i].name + '</li>' +
+                            '<li>Email: ' + users[i].email + '</li>' +
+                            '</ul';
+                                    // when you have it as just user.id or user.name, when printed out on the web browser, it will print out as undefined only. you need users[i] because you are iterating through the array, and it needs to know what iteration it is at / needs current iteration
+                    }
+                    // the above lines of 33-38  are concatinating in ES5 Javascript --- html string / output string
+                    document.getElementById('users').innerHTML = output;
+                    // this is what puts it in the #user 
+                }
+            }
+            xhr.send();
+        }
+    </script>
+</body>
+</html>
